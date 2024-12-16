@@ -1,5 +1,8 @@
 package com.example.demo.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +21,8 @@ public class ProductService {
 
 	@Transactional(readOnly = true)
 	public Page<ProductDTO> find(PageRequest pageRequest) {
-		Page<Product> list = repository.findAll(pageRequest);
-		return list.map(x -> new ProductDTO(x));
+		Page<Product> page = repository.findAll(pageRequest);
+		repository.findProductsCategories(page.stream().collect(Collectors.toList()));
+		return page.map(x -> new ProductDTO(x));
 	}
 }
